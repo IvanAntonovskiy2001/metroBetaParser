@@ -40,7 +40,7 @@ public class App {
     static String firstCategoryOfGoods = "Алкоголь"; // категория с которой нужно парсить
     static String lastCategoryOfGoods = "Замороженные готовые блюда";  // категория до которой нужно парсить
     static String fileType = ".xls";  // тип файла в который парсится (в этом приложение парсинг производится только в ексель файл)
-    static String pathToTheFolder = "/Users/ivanantonovskiy/lists/";  // путь к папке в которой должны лежать файлы с товаром
+    static String pathToTheFolder = "/Users/ivanantonovskiy/ProductList/";  // путь к папке в которой должны лежать файлы с товаром
     static WebDriver webDriverConfig() {
         System.setProperty(chromeDriver, wayToChromeDriver);
         WebDriver webDriver = new ChromeDriver();
@@ -109,7 +109,7 @@ public class App {
     /*
     функция getProductPagesByLink - возвращает количество страниц товаров ктегории по ссылке
      */
-    static void addProductsByLinkToTheProductList(String url, List<Product> products) {
+    static void addProductsByLinkToTheProductList(String url, List<Product> products) throws InterruptedException {
         int pages = getProductPagesByLink(url);
         if(pages > 0) {
             for (int j = 1; j <= pages; j++) {
@@ -210,24 +210,14 @@ public class App {
     /*
     функция creatingAnExelFileForTheProductCategory - создает ексель лист используя продукт лист и category_i(любое число - нужно для id товара(в моем случае))
      */
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws IOException, InterruptedException {
         List<String> urlCategory = listUrlWithProductCategories(urlLoadingPageMetro, firstCategoryOfGoods, lastCategoryOfGoods);
-        for (int category_i = 120  ; category_i < urlCategory.size();category_i++) {
+        for (int category_i = 5; category_i < urlCategory.size();category_i++) {
             List<Product> products = new ArrayList<>();
-            try {
-                addProductsByLinkToTheProductList(urlCategory.get(category_i), products);
-            } catch (WebDriverException e){
-                addProductsByLinkToTheProductList(urlCategory.get(category_i), products);
-            }
+            addProductsByLinkToTheProductList(urlCategory.get(category_i), products);
             if (products.size() > 0) {
                 creatingAnExelFileForTheProductCategory(pathToTheFolder,fileType,products,category_i);
             }
         }
     }
-
-
 }
-
-
-
